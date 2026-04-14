@@ -1070,10 +1070,6 @@ function showResults(){
 
 function saveToAirtable(){
   if(!lastResult){alert('No result to save.');return;}
-  if(!WEBHOOK_URL||WEBHOOK_URL.indexOf('PASTE_')===0){
-    alert('Webhook URL not configured. Edit pemb_interview_tool.html and set WEBHOOK_URL to your Airtable Automation webhook.');
-    return;
-  }
   const r=lastResult;
   const wageOffered=parseFloat(document.getElementById('wage-input').value)||null;
   const wsMap={low:'Low — stay close to home',medium:'Medium — work hard, some breaks',high:'High — maximum hours'};
