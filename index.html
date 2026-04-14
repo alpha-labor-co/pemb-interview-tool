@@ -748,7 +748,7 @@ let workStyle=null;
 
 // === AIRTABLE INTEGRATION ===
 // Paste the webhook URL from your Airtable Automation ("When webhook received" trigger) below.
-const WEBHOOK_URL='PASTE_YOUR_AIRTABLE_WEBHOOK_URL_HERE';
+const WEBHOOK_URL='https://hooks.airtable.com/workflows/v1/genericWebhook/appoeOifLHXMcBCw4/wfl7tdALKtI2l2F1a/wtrnL4O3XsbKSD59U';
 let lastResult=null;
 
 function welcomeAnswer(yes){
@@ -1126,7 +1126,7 @@ function saveToAirtable(){
 
   const btn=document.getElementById('save-airtable-btn');
   btn.disabled=true;btn.textContent='Saving…';
-  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({payload:JSON.stringify(payload)})})
     .then(resp=>{
       if(!resp.ok)throw new Error('HTTP '+resp.status);
       btn.textContent='✓ Saved to Airtable';btn.style.background='#3B6D11';
