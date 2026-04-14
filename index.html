@@ -88,6 +88,22 @@ h1{font-size:22px;font-weight:500;color:#1a1a18;margin-bottom:.2rem}
 .logi-btn.sel-yes{background:#EAF3DE;border-color:#639922;color:#3B6D11;font-weight:500}
 .logi-btn.sel-no{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D;font-weight:500}
 .logi-btn.sel-some{background:#FAEEDA;border-color:#EF9F27;color:#854F0B;font-weight:500}
+.sub-by-card{background:#fff;border:1px solid #e5e5df;border-radius:12px;padding:1rem 1.1rem 1.1rem;margin-bottom:.75rem;position:relative;overflow:hidden}
+.sub-by-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#639922,#8fb94a 40%,#e5e5df 40%)}
+.sub-by-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.75rem}
+.sub-by-label{font-size:10px;color:#9a9a92;font-weight:600;text-transform:uppercase;letter-spacing:.09em}
+.sub-by-status{font-size:11px;color:#b8b8b0;font-style:italic;transition:color .2s}
+.sub-by-status.has-val{color:#3B6D11;font-style:normal;font-weight:500}
+.sub-by-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.sub-by-btn{position:relative;padding:.7rem .5rem;border:1px solid #dcdcd4;border-radius:9px;background:#fff;color:#6a6a62;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .18s ease;text-align:center;line-height:1.25;letter-spacing:.01em}
+.sub-by-btn:hover{border-color:#8fb94a;color:#3B6D11;transform:translateY(-1px)}
+.sub-by-btn.sel{background:#EAF3DE;border-color:#639922;color:#3B6D11;font-weight:600;box-shadow:inset 0 0 0 1px #639922}
+.sub-by-btn.sel::after{content:"✓";position:absolute;top:3px;right:6px;font-size:10px;color:#639922;font-weight:700}
+.sub-by-other-wrap{margin-top:8px;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease,opacity .2s ease,margin-top .25s ease}
+.sub-by-other-wrap.show{max-height:60px;opacity:1;margin-top:10px}
+.sub-by-other{width:100%;padding:.65rem .85rem;border:1px solid #dcdcd4;border-radius:9px;background:#faf9f4;font-size:13.5px;color:#1a1a18;outline:none;font-family:inherit;transition:all .18s}
+.sub-by-other:focus{border-color:#639922;background:#fff;box-shadow:0 0 0 3px rgba(99,153,34,.12)}
+@media (max-width:480px){.sub-by-grid{grid-template-columns:repeat(2,1fr)}}
 .avail-select,.wage-select,.status-select{width:100%;padding:9px 13px;border:1px solid #d0d0cc;border-radius:9px;font-size:14px;background:#fff;color:#1a1a18;outline:none}
 .slider-row{margin-bottom:1rem}
 .slider-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
@@ -670,16 +686,22 @@ input[type=range]{width:100%;height:6px;accent-color:#1a1a18}
   <div id="ans-list"></div>
 </div>
 
-<div class="card no-print" style="margin-bottom:.75rem">
-  <div class="data-card-title" style="margin-bottom:.5rem">Submitted by</div>
-  <select id="submitted-by-select" style="width:100%;padding:.6rem .75rem;border:1px solid #ccc;border-radius:6px;font-size:14px;background:#fff">
-    <option value="">— Select interviewer —</option>
-    <option value="Jeff Conaway">Jeff Conaway</option>
-    <option value="Greg Rentz">Greg Rentz</option>
-    <option value="Marc Lewis">Marc Lewis</option>
-    <option value="Matt Johnston">Matt Johnston</option>
-    <option value="Brandon Thompson">Brandon Thompson</option>
-  </select>
+<div class="sub-by-card no-print">
+  <div class="sub-by-head">
+    <div class="sub-by-label">Submitted by</div>
+    <div class="sub-by-status" id="sub-by-status">Required</div>
+  </div>
+  <div class="sub-by-grid" id="sub-by-grid">
+    <button type="button" class="sub-by-btn" data-name="Jeff Conaway" onclick="setSubmittedBy('Jeff Conaway')">Jeff<br>Conaway</button>
+    <button type="button" class="sub-by-btn" data-name="Greg Rentz" onclick="setSubmittedBy('Greg Rentz')">Greg<br>Rentz</button>
+    <button type="button" class="sub-by-btn" data-name="Marc Lewis" onclick="setSubmittedBy('Marc Lewis')">Marc<br>Lewis</button>
+    <button type="button" class="sub-by-btn" data-name="Matt Johnston" onclick="setSubmittedBy('Matt Johnston')">Matt<br>Johnston</button>
+    <button type="button" class="sub-by-btn" data-name="Brandon Thompson" onclick="setSubmittedBy('Brandon Thompson')">Brandon<br>Thompson</button>
+    <button type="button" class="sub-by-btn" data-name="__other__" onclick="setSubmittedBy('__other__')">Other<br>+</button>
+  </div>
+  <div class="sub-by-other-wrap" id="sub-by-other-wrap">
+    <input type="text" class="sub-by-other" id="sub-by-other-input" placeholder="Type interviewer name…" oninput="submittedByOtherInput()" maxlength="60">
+  </div>
 </div>
 <button class="btn-main no-print" id="save-airtable-btn" onclick="saveToAirtable()" style="margin-bottom:.75rem">Send to Airtable</button>
 <button class="print-btn no-print" onclick="printReport()">Print report</button>
@@ -1079,9 +1101,39 @@ function showResults(){
   show('s-results');window.scrollTo(0,0);
 }
 
+let submittedByState={pick:null,other:''};
+function setSubmittedBy(name){
+  submittedByState.pick=name;
+  document.querySelectorAll('.sub-by-btn').forEach(b=>{
+    b.classList.toggle('sel',b.dataset.name===name);
+  });
+  const wrap=document.getElementById('sub-by-other-wrap');
+  const input=document.getElementById('sub-by-other-input');
+  if(name==='__other__'){
+    wrap.classList.add('show');
+    setTimeout(()=>input.focus(),180);
+  }else{
+    wrap.classList.remove('show');
+  }
+  updateSubmittedByStatus();
+}
+function submittedByOtherInput(){
+  submittedByState.other=document.getElementById('sub-by-other-input').value.trim();
+  updateSubmittedByStatus();
+}
+function getSubmittedBy(){
+  if(submittedByState.pick==='__other__')return submittedByState.other;
+  return submittedByState.pick||'';
+}
+function updateSubmittedByStatus(){
+  const el=document.getElementById('sub-by-status');
+  const v=getSubmittedBy();
+  if(v){el.textContent='✓ '+v;el.classList.add('has-val');}
+  else{el.textContent='Required';el.classList.remove('has-val');}
+}
 function saveToAirtable(){
   if(!lastResult){alert('No result to save.');return;}
-  const submittedBy=document.getElementById('submitted-by-select').value;
+  const submittedBy=getSubmittedBy();
   if(!submittedBy){alert('Please select who submitted this interview before sending to Airtable.');return;}
   const r=lastResult;
   const wageOffered=parseFloat(document.getElementById('wage-input').value)||null;
