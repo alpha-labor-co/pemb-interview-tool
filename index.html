@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PEMB Erector Interview Tool — Alpha Labor Co</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f2;color:#1a1a18;min-height:100vh}
+.page{max-width:700px;margin:0 auto;padding:2rem 1rem 4rem}
+h1{font-size:22px;font-weight:500;color:#1a1a18;margin-bottom:.2rem}
+.tagline{font-size:14px;color:#888;margin-bottom:2rem}
+.card{background:#fff;border:1px solid #e0e0dc;border-radius:14px;padding:1.5rem;margin-bottom:1.25rem}
+.card-title{font-size:16px;font-weight:500;color:#1a1a18;margin-bottom:1rem}
+.card-sub{font-size:13px;color:#888;margin-bottom:1rem;line-height:1.5}
+.field{margin-bottom:1.1rem}
+.field label{display:block;font-size:13px;color:#666;margin-bottom:5px;font-weight:500}
+.field input[type=text],.field input[type=email],.field input[type=tel]{width:100%;padding:9px 13px;border:1px solid #d0d0cc;border-radius:9px;font-size:15px;background:#fff;color:#1a1a18;outline:none}
+.field input:focus{border-color:#888}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.toggle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.toggle{border:1px solid #d0d0cc;border-radius:9px;padding:9px 12px;font-size:13px;color:#666;cursor:pointer;background:#fff;text-align:center;transition:all .15s;user-select:none}
+.toggle.on{background:#1a1a18;color:#fff;border-color:#1a1a18}
+.btn-main{width:100%;padding:12px;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;background:#1a1a18;color:#fff;transition:opacity .15s}
+.btn-main:hover{opacity:.85}
+.btn-main:disabled{opacity:.35;cursor:not-allowed}
+.btn-outline{padding:9px 18px;border:1px solid #d0d0cc;border-radius:9px;font-size:13px;cursor:pointer;background:#fff;color:#555}
+.btn-outline:hover{background:#f5f5f2}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.type-card{border:1.5px solid #e0e0dc;border-radius:12px;padding:1.1rem;cursor:pointer;transition:all .15s;background:#fff}
+.type-card:hover{border-color:#aaa}
+.type-card.selected{border-color:#1a1a18;background:#f8f8f5}
+.type-card h3{font-size:15px;font-weight:500;color:#1a1a18;margin-bottom:.3rem}
+.type-card p{font-size:12px;color:#aaa;line-height:1.5}
+.type-icon{font-size:22px;margin-bottom:.5rem}
+.knockout-box{text-align:center;padding:1.5rem 1rem}
+.knockout-icon{font-size:48px;margin-bottom:1rem}
+.knockout-title{font-size:20px;font-weight:500;color:#1a1a18;margin-bottom:.5rem}
+.knockout-sub{font-size:14px;color:#888;margin-bottom:1.5rem;line-height:1.6}
+.yn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.yn-btn{padding:14px;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;border:1.5px solid #d0d0cc;background:#fff;color:#1a1a18;transition:all .15s}
+.yn-btn:hover{border-color:#888}
+.interview-top{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem}
+.cand-pill{background:#fff;border:1px solid #e0e0dc;border-radius:8px;padding:5px 12px;font-size:13px;color:#666;white-space:nowrap}
+.cand-pill b{color:#1a1a18;font-weight:500}
+.prog-bar{flex:1;height:5px;background:#e8e8e4;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:#1a1a18;border-radius:3px;transition:width .35s}
+.q-num{font-size:13px;color:#aaa;white-space:nowrap}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:.85rem}
+.level-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.badge-l1{background:#EAF3DE;color:#3B6D11}
+.badge-l2{background:#FAEEDA;color:#854F0B}
+.badge-l3{background:#FAECE7;color:#993C1D}
+.badge-l4{background:#EEEDFE;color:#3C3489}
+.cat-tag{font-size:12px;color:#aaa}
+.q-text{font-size:17px;font-weight:500;color:#1a1a18;line-height:1.5;margin-bottom:1.1rem}
+.hint-box{background:#f8f8f5;border-radius:10px;padding:.85rem 1rem;margin-bottom:1.1rem}
+.hint-toggle{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:#aaa;border:none;background:none;padding:0;width:100%}
+.hint-arrow{font-size:10px;transition:transform .2s}
+.hint-arrow.open{transform:rotate(90deg)}
+.hint-content{font-size:13px;color:#555;line-height:1.65;margin-top:.65rem;display:none}
+.hint-content.open{display:block}
+.hint-content .good{color:#3B6D11;font-weight:600}
+.hint-content .bad{color:#993C1D;font-weight:600}
+.score-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:.85rem}
+.score-btn{padding:11px 6px;border:1px solid #d0d0cc;border-radius:10px;font-size:13px;cursor:pointer;background:#fff;color:#666;text-align:center;transition:all .15s;user-select:none;font-weight:500}
+.score-btn:hover{border-color:#aaa}
+.score-btn.sel-good{background:#EAF3DE;border-color:#639922;color:#3B6D11}
+.score-btn.sel-ok{background:#FAEEDA;border-color:#EF9F27;color:#854F0B}
+.score-btn.sel-bad{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
+.notes-box{width:100%;padding:9px 13px;border:1px solid #e0e0dc;border-radius:9px;font-size:13px;background:#fff;color:#1a1a18;resize:vertical;min-height:64px;font-family:inherit;outline:none;margin-bottom:.85rem}
+.notes-box:focus{border-color:#aaa}
+.nav-row{display:flex;justify-content:space-between;align-items:center}
+.skip-link{font-size:13px;color:#bbb;cursor:pointer;background:none;border:none;padding:0}
+.skip-link:hover{color:#888}
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.cert-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #e0e0dc;border-radius:9px;cursor:pointer;background:#fff;transition:all .15s;user-select:none}
+.cert-item.checked{background:#EAF3DE;border-color:#639922}
+.cert-check{width:16px;height:16px;border:1.5px solid #ccc;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;background:#fff}
+.cert-item.checked .cert-check{background:#639922;border-color:#639922}
+.cert-label{font-size:13px;color:#555}
+.cert-item.checked .cert-label{color:#3B6D11;font-weight:500}
+.logi-card{border:1px solid #e0e0dc;border-radius:10px;padding:.85rem;background:#fff}
+.logi-label{font-size:12px;color:#aaa;margin-bottom:.5rem;font-weight:500}
+.logi-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.logi-btn{padding:8px;border:1px solid #d0d0cc;border-radius:8px;font-size:13px;cursor:pointer;background:#fff;color:#666;text-align:center;transition:all .15s}
+.logi-btn.sel-yes{background:#EAF3DE;border-color:#639922;color:#3B6D11;font-weight:500}
+.logi-btn.sel-no{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D;font-weight:500}
+.logi-btn.sel-some{background:#FAEEDA;border-color:#EF9F27;color:#854F0B;font-weight:500}
+.avail-select,.wage-select,.status-select{width:100%;padding:9px 13px;border:1px solid #d0d0cc;border-radius:9px;font-size:14px;background:#fff;color:#1a1a18;outline:none}
+.slider-row{margin-bottom:1rem}
+.slider-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+.slider-label{font-size:14px;font-weight:500;color:#1a1a18}
+.slider-val{font-size:20px;font-weight:500;color:#1a1a18;min-width:28px;text-align:right}
+.slider-desc{font-size:12px;color:#aaa;margin-top:.2rem}
+input[type=range]{width:100%;height:6px;accent-color:#1a1a18}
+.slider-ticks{display:flex;justify-content:space-between;font-size:11px;color:#ccc;margin-top:3px;padding:0 2px}
+.specialty-item{border:1px solid #e0e0dc;border-radius:10px;background:#fff;overflow:hidden;margin-bottom:8px}
+.specialty-header{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;user-select:none}
+.specialty-header.checked{background:#EAF3DE}
+.specialty-check{width:18px;height:18px;border:1.5px solid #ccc;border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;background:#fff}
+.specialty-header.checked .specialty-check{background:#639922;border-color:#639922}
+.specialty-name{font-size:14px;font-weight:500;color:#1a1a18}
+.specialty-header.checked .specialty-name{color:#3B6D11}
+.specialty-sub{background:#f8f8f5;border-top:1px solid #e8e8e4;padding:10px 14px;display:none}
+.specialty-sub.open{display:block}
+.specialty-sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px}
+.sub-item{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #e0e0dc;border-radius:8px;cursor:pointer;background:#fff;font-size:13px;color:#666;user-select:none}
+.sub-item.checked{background:#EAF3DE;border-color:#639922;color:#3B6D11;font-weight:500}
+.sub-check{width:14px;height:14px;border:1.5px solid #ccc;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;background:#fff}
+.sub-item.checked .sub-check{background:#639922;border-color:#639922}
+.lang-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+
+/* results */
+.result-hero{text-align:center;padding:.5rem 0 1.5rem}
+.res-candidate{font-size:14px;color:#aaa;margin-bottom:.2rem}
+.res-contact{font-size:13px;color:#888;margin-bottom:.5rem}
+.res-type-badge{display:inline-block;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:.75rem}
+.score-circle{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;margin:0 auto .75rem}
+.circle-good{background:#EAF3DE;color:#3B6D11}
+.circle-mid{background:#FAEEDA;color:#854F0B}
+.circle-low{background:#FCEBEB;color:#A32D2D}
+.res-level{font-size:26px;font-weight:500;color:#1a1a18;margin-bottom:.3rem}
+.res-sub{font-size:14px;color:#aaa}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+.metric{background:#f5f5f2;border-radius:10px;padding:.85rem;text-align:center}
+.metric-val{font-size:22px;font-weight:500;color:#1a1a18}
+.metric-lbl{font-size:11px;color:#aaa;margin-top:2px}
+.metric-val.v-good{color:#3B6D11}
+.metric-val.v-ok{color:#854F0B}
+.metric-val.v-bad{color:#A32D2D}
+.wage-box{background:#fff;border:2px solid #1a1a18;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.wage-box-title{font-size:14px;font-weight:500;color:#1a1a18;margin-bottom:.5rem}
+.wage-rec{font-size:22px;font-weight:500;color:#1a1a18;margin-bottom:.25rem}
+.wage-rec-sub{font-size:13px;color:#888;margin-bottom:1rem}
+.wage-entry-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:.75rem}
+.wage-entry-label{font-size:12px;color:#666;margin-bottom:4px;font-weight:500}
+.wage-input{width:100%;padding:9px 13px;border:1.5px solid #d0d0cc;border-radius:9px;font-size:15px;font-weight:500;background:#fff;color:#1a1a18;outline:none}
+.wage-input:focus{border-color:#1a1a18}
+.status-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.status-btn{padding:10px 6px;border:1px solid #d0d0cc;border-radius:9px;font-size:13px;cursor:pointer;background:#fff;color:#666;text-align:center;font-weight:500;transition:all .15s}
+.status-btn.sel-accepted{background:#EAF3DE;border-color:#639922;color:#3B6D11}
+.status-btn.sel-thinking{background:#FAEEDA;border-color:#EF9F27;color:#854F0B}
+.status-btn.sel-denied{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
+.rec-box{border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.rec-box.rec-good{background:#EAF3DE;border:1px solid #97C459}
+.rec-box.rec-mid{background:#FAEEDA;border:1px solid #EF9F27}
+.rec-box.rec-low{background:#FCEBEB;border:1px solid #F09595}
+.rec-box h3{font-size:15px;font-weight:500;margin-bottom:.5rem}
+.rec-box.rec-good h3{color:#3B6D11}
+.rec-box.rec-mid h3{color:#854F0B}
+.rec-box.rec-low h3{color:#A32D2D}
+.rec-box p{font-size:13px;line-height:1.65}
+.rec-box.rec-good p{color:#3B6D11}
+.rec-box.rec-mid p{color:#854F0B}
+.rec-box.rec-low p{color:#A32D2D}
+.level-box{background:#fff;border:1px solid #e0e0dc;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1.25rem}
+.level-box h3{font-size:15px;font-weight:500;color:#1a1a18;margin-bottom:.4rem}
+.level-box p{font-size:13px;color:#666;line-height:1.65}
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.data-card{background:#f5f5f2;border-radius:10px;padding:.85rem 1rem}
+.data-card-title{font-size:11px;color:#aaa;font-weight:500;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.6rem}
+.data-item{display:flex;justify-content:space-between;font-size:13px;margin-bottom:.35rem;gap:8px}
+.data-key{color:#888;flex-shrink:0}
+.data-val{font-weight:500;color:#1a1a18;text-align:right}
+.data-val.good{color:#3B6D11}
+.data-val.bad{color:#A32D2D}
+.cert-result-list{display:flex;flex-wrap:wrap;gap:6px}
+.cert-pill{font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:#EAF3DE;color:#3B6D11}
+.cert-none{font-size:13px;color:#aaa;font-style:italic}
+.spec-pill{font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:#E6F1FB;color:#185FA5;margin-right:4px;margin-bottom:4px;display:inline-block}
+.breakdown-title{font-size:13px;font-weight:500;color:#aaa;margin-bottom:.75rem}
+.ans-row{display:flex;align-items:flex-start;gap:10px;padding:.8rem;border:1px solid #e8e8e4;border-radius:10px;margin-bottom:6px;background:#fff}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.dot-good{background:#639922}
+.dot-ok{background:#EF9F27}
+.dot-bad{background:#E24B4A}
+.dot-skip{background:#c0bfb8}
+.ans-q{font-size:13px;color:#1a1a18;line-height:1.4;flex:1}
+.ans-note{font-size:12px;color:#aaa;margin-top:3px;font-style:italic}
+.ans-label{font-size:11px;font-weight:600;white-space:nowrap;padding-top:1px}
+.lbl-good{color:#3B6D11}
+.lbl-ok{color:#854F0B}
+.lbl-bad{color:#A32D2D}
+.lbl-skip{color:#c0bfb8}
+.print-btn{width:100%;padding:12px;border:1.5px solid #1a1a18;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;background:#fff;color:#1a1a18;margin-bottom:10px;transition:all .15s}
+.print-btn:hover{background:#f5f5f2}
+.workstyle-btn{border:1.5px solid #e0e0dc;border-radius:10px;padding:.85rem 1rem;cursor:pointer;background:#fff;transition:all .15s;user-select:none}
+.workstyle-btn:hover{border-color:#aaa}
+.workstyle-btn.ws-sel-low{background:#E1F5EE;border-color:#1D9E75}
+.workstyle-btn.ws-sel-medium{background:#FAEEDA;border-color:#EF9F27}
+.workstyle-btn.ws-sel-high{background:#EAF3DE;border-color:#639922}
+.ws-label{font-size:14px;font-weight:500;color:#1a1a18;margin-bottom:.25rem}
+.workstyle-btn.ws-sel-low .ws-label{color:#0F6E56}
+.workstyle-btn.ws-sel-medium .ws-label{color:#854F0B}
+.workstyle-btn.ws-sel-high .ws-label{color:#3B6D11}
+.ws-desc{font-size:12px;color:#888;line-height:1.5}
+.workstyle-btn.ws-sel-low .ws-desc{color:#0F6E56}
+.workstyle-btn.ws-sel-medium .ws-desc{color:#854F0B}
+.workstyle-btn.ws-sel-high .ws-desc{color:#3B6D11}
+.screen{display:none}
+.screen.active{display:block}
+
+/* ====== PRINT STYLES ====== */
+@media print {
+  body{background:#fff;font-size:11pt}
+  .page{max-width:100%;padding:.5rem;margin:0}
+  .no-print{display:none!important}
+  .screen{display:none!important}
+  .screen.active{display:none!important}
+  #print-report{display:block!important}
+  .pr-header{border-bottom:2pt solid #1a1a18;padding-bottom:10pt;margin-bottom:14pt}
+  .pr-company{font-size:9pt;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4pt}
+  .pr-name{font-size:20pt;font-weight:600;margin-bottom:3pt}
+  .pr-contact{font-size:10pt;color:#444}
+  .pr-level-badge{display:inline-block;font-size:11pt;font-weight:600;padding:4pt 12pt;border-radius:20pt;border:1.5pt solid #1a1a18;margin:8pt 0 4pt}
+  .pr-score{font-size:10pt;color:#555;margin-bottom:2pt}
+  .pr-section{margin-bottom:14pt}
+  .pr-section-title{font-size:9pt;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#888;border-bottom:0.5pt solid #ccc;padding-bottom:3pt;margin-bottom:8pt}
+  .pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20pt}
+  .pr-row{display:flex;justify-content:space-between;font-size:10pt;padding:3pt 0;border-bottom:0.5pt solid #eee}
+  .pr-key{color:#888}
+  .pr-val{font-weight:500;color:#1a1a18}
+  .pr-val.good{color:#3B6D11}
+  .pr-val.bad{color:#A32D2D}
+  .pr-pill{display:inline-block;font-size:9pt;font-weight:500;padding:2pt 8pt;border-radius:20pt;border:1pt solid #3B6D11;color:#3B6D11;margin:2pt 3pt 2pt 0}
+  .pr-pill-blue{border-color:#185FA5;color:#185FA5}
+  .pr-rec-box{padding:9pt 12pt;border-radius:8pt;margin-bottom:10pt;border:1pt solid}
+  .pr-rec-title{font-size:11pt;font-weight:600;margin-bottom:4pt}
+  .pr-rec-text{font-size:10pt;line-height:1.55}
+  .pr-rec-good{background:#f0f9e8;border-color:#97C459}
+  .pr-rec-good .pr-rec-title{color:#3B6D11}
+  .pr-rec-good .pr-rec-text{color:#3B6D11}
+  .pr-rec-mid{background:#fef6e6;border-color:#EF9F27}
+  .pr-rec-mid .pr-rec-title{color:#854F0B}
+  .pr-rec-mid .pr-rec-text{color:#854F0B}
+  .pr-rec-low{background:#fdf0f0;border-color:#F09595}
+  .pr-rec-low .pr-rec-title{color:#A32D2D}
+  .pr-rec-low .pr-rec-text{color:#A32D2D}
+  .pr-wage-box{border:1.5pt solid #1a1a18;border-radius:8pt;padding:10pt 14pt;margin-bottom:10pt}
+  .pr-wage-row{display:flex;gap:30pt}
+  .pr-wage-item label{font-size:9pt;color:#888;display:block;margin-bottom:2pt}
+  .pr-wage-item span{font-size:14pt;font-weight:600;color:#1a1a18}
+  .pr-status-badge{display:inline-block;font-size:10pt;font-weight:600;padding:3pt 12pt;border-radius:20pt;border:1.5pt solid}
+  .pr-q-row{display:flex;gap:8pt;font-size:9.5pt;padding:4pt 0;border-bottom:0.5pt solid #eee;align-items:flex-start}
+  .pr-q-dot{width:8pt;height:8pt;border-radius:50%;flex-shrink:0;margin-top:2pt}
+  .pr-q-dot.good{background:#639922}
+  .pr-q-dot.ok{background:#EF9F27}
+  .pr-q-dot.bad{background:#E24B4A}
+  .pr-q-dot.skip{background:#ccc}
+  .pr-q-text{flex:1;color:#1a1a18}
+  .pr-q-note{font-style:italic;color:#888;font-size:9pt}
+  .pr-q-score{font-weight:600;white-space:nowrap;font-size:9pt}
+  .pr-q-score.good{color:#3B6D11}
+  .pr-q-score.ok{color:#854F0B}
+  .pr-q-score.bad{color:#A32D2D}
+  .pr-q-score.skip{color:#ccc}
+  .pr-footer{margin-top:16pt;padding-top:8pt;border-top:0.5pt solid #ccc;font-size:9pt;color:#aaa;display:flex;justify-content:space-between}
+  .pr-interviewer-line{margin-top:10pt;font-size:10pt;color:#555}
+}
+#print-report{display:none}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- WELCOME / GATE SCREEN -->
+<div class="screen active" id="s-welcome">
+<div style="text-align:center;padding:1.5rem 0 1rem">
+  <div style="font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#aaa;margin-bottom:.5rem">Alpha Labor Co LLC</div>
+  <div style="font-size:26px;font-weight:500;color:#1a1a18;margin-bottom:.5rem;line-height:1.3">PEMB Erector<br>Skill Evaluation</div>
+  <div style="font-size:14px;color:#888;line-height:1.6;max-width:480px;margin:0 auto 1.75rem">We place pre-engineered metal building crews on active projects nationwide. This evaluation helps us identify your strengths and match you to the jobs where you'll excel the most.</div>
+</div>
+
+<div class="card" style="margin-bottom:1rem">
+  <div style="font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:#aaa;margin-bottom:.85rem">Before we get started</div>
+  <div style="font-size:17px;font-weight:500;color:#1a1a18;line-height:1.5;margin-bottom:.5rem">Has this applicant personally erected pre-engineered metal buildings before?</div>
+  <div style="font-size:13px;color:#aaa;margin-bottom:1.25rem;line-height:1.5">Not just worked around them — actually set frames, installed purlins, erected the steel.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <button class="yn-btn" style="background:#EAF3DE;border-color:#639922;color:#3B6D11;font-size:16px" onclick="welcomeAnswer(true)">Yes</button>
+    <button class="yn-btn" style="background:#FCEBEB;border-color:#E24B4A;color:#A32D2D;font-size:16px" onclick="welcomeAnswer(false)">No</button>
+  </div>
+</div>
+</div>
+
+<!-- NO EXPERIENCE GATE -->
+<div class="screen" id="s-no-exp">
+<div class="card">
+  <div class="knockout-box">
+    <div class="knockout-icon">🚫</div>
+    <div class="knockout-title">No PEMB experience</div>
+    <div class="knockout-sub">This applicant has not erected pre-engineered metal buildings. Alpha Labor Co requires hands-on erection experience. There is no need to continue.</div>
+    <div style="background:#FCEBEB;border:1px solid #F09595;border-radius:12px;padding:1.1rem 1.25rem;text-align:left;margin-bottom:1.5rem">
+      <div style="font-size:14px;font-weight:500;color:#A32D2D;margin-bottom:.4rem">Interview ended before it began</div>
+      <div style="font-size:13px;color:#A32D2D;line-height:1.6">Do not proceed with collecting applicant information or conducting the skills assessment. Thank the applicant for their time.</div>
+    </div>
+    <button class="btn-main" onclick="restart()">Start over</button>
+  </div>
+</div>
+</div>
+
+<!-- INTERVIEWER SCRIPT SCREEN -->
+<div class="screen" id="s-script">
+<div style="text-align:center;padding:1rem 0 .75rem">
+  <div style="font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:#aaa;margin-bottom:.4rem">Interviewer script</div>
+  <div style="font-size:18px;font-weight:500;color:#1a1a18;margin-bottom:.25rem">Read this to the applicant</div>
+  <div style="font-size:13px;color:#888">Word for word or in your own words — your call.</div>
+</div>
+
+<div class="card" style="border:1.5px solid #1a1a18">
+  <div style="font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:#aaa;margin-bottom:1rem">What to say</div>
+
+  <div style="background:#f8f8f5;border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:1rem;border-left:3px solid #1a1a18;border-radius:0;border-radius:0 10px 10px 0">
+    <div style="font-size:13px;font-weight:500;color:#888;margin-bottom:.4rem">Open with</div>
+    <div style="font-size:14px;color:#1a1a18;line-height:1.7;font-style:italic">"Hey, do you have about five minutes? We like to do a quick skill evaluation with everyone we talk to — it's nothing to stress over, just a few questions so we can get a feel for your background."</div>
+  </div>
+
+  <div style="background:#f8f8f5;border-radius:0 10px 10px 0;border-left:3px solid #1a1a18;padding:1.1rem 1.25rem;margin-bottom:1rem">
+    <div style="font-size:13px;font-weight:500;color:#888;margin-bottom:.4rem">Who we are</div>
+    <div style="font-size:14px;color:#1a1a18;line-height:1.7;font-style:italic">"Alpha Labor Co is a specialized erection staffing company. We put PEMB crews on active projects across the country — steel, roofing, wall panels, insulation. What we do differently is we don't just throw bodies at a job. We take the time to figure out what you're actually good at and match you to the projects where you're going to perform the best."</div>
+  </div>
+
+  <div style="background:#f8f8f5;border-radius:0 10px 10px 0;border-left:3px solid #1a1a18;padding:1.1rem 1.25rem;margin-bottom:1rem">
+    <div style="font-size:13px;font-weight:500;color:#888;margin-bottom:.4rem">Why the evaluation</div>
+    <div style="font-size:14px;color:#1a1a18;line-height:1.7;font-style:italic">"The reason we do this evaluation is simple — we want you to succeed on the job, not just show up. If we know your strongest area is roofing or primary steel or wall panels, we can put you where you're going to thrive, move up faster, and make more money. That's the whole point."</div>
+  </div>
+
+  <div style="background:#EAF3DE;border-radius:0 10px 10px 0;border-left:3px solid #639922;padding:1.1rem 1.25rem;margin-bottom:1rem">
+    <div style="font-size:13px;font-weight:500;color:#3B6D11;margin-bottom:.4rem">Our culture — this matters</div>
+    <div style="font-size:14px;color:#3B6D11;line-height:1.7;font-style:italic">"One thing I want you to know about Alpha Labor Co — this company was founded by people who came up doing this work. We're not the company that says the customer is always right and leaves it at that. We find the middle ground. We care about our employees just as much as we care about our customers. At the end of the day, we want everybody to win. When the customer wins, we win. When you win, we all win. We want to see you grow, make more money, and build a career — not just fill a slot on a project."</div>
+  </div>
+
+  <div style="background:#f8f8f5;border-radius:0 10px 10px 0;border-left:3px solid #1a1a18;padding:1.1rem 1.25rem">
+    <div style="font-size:13px;font-weight:500;color:#888;margin-bottom:.4rem">Transition into the evaluation</div>
+    <div style="font-size:14px;color:#1a1a18;line-height:1.7;font-style:italic">"Alright, I'm going to ask you a handful of questions about your experience and knowledge. A couple things before we start — some of these questions might sound really basic, maybe even obvious. That's intentional. We ask them because the answers tell us a lot about where someone's at, so don't overthink it. And if you genuinely don't know the answer to something, just say so. 'I don't know' is always the right answer when it's the honest one. We're not here to trick you — we just want to understand what you know and what you're good at so we can put you in the right place. Sound good? Let's go."</div>
+  </div>
+</div>
+
+<div style="background:#FAEEDA;border:1px solid #EF9F27;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem">
+  <div style="font-size:13px;font-weight:500;color:#854F0B;margin-bottom:.3rem">Interviewer note</div>
+  <div style="font-size:13px;color:#854F0B;line-height:1.6">Keep it conversational — you don't have to read this word for word. The goal is to make them comfortable before the questions start. Emphasize that <strong style="font-weight:600">"I don't know"</strong> is always acceptable. A relaxed applicant who answers honestly is far more useful than one who guesses to try to impress you.</div>
+</div>
+
+<button class="btn-main" onclick="show('s-setup')">Continue to applicant info &rarr;</button>
+</div>
+
+<!-- SETUP -->
+<div class="screen" id="s-setup">
+<h1>PEMB erector interview tool</h1>
+<p class="tagline">Alpha Labor Co — skill assessment &amp; hiring recommendation</p>
+<div class="card">
+  <div class="card-title">Applicant information</div>
+  <div class="two-col">
+    <div class="field"><label>Full name</label><input type="text" id="inp-name" placeholder="John Smith" /></div>
+    <div class="field"><label>Phone number</label><input type="tel" id="inp-phone" placeholder="(555) 867-5309" /></div>
+  </div>
+  <div class="field"><label>Email address</label><input type="email" id="inp-email" placeholder="john@email.com" /></div>
+  <div class="field"><label>Current location (city, state)</label><input type="text" id="inp-location" placeholder="e.g. Tampa, FL" /></div>
+</div>
+<div class="card">
+  <div class="card-title">Applicant type</div>
+  <div class="type-grid">
+    <div class="type-card" id="type-erector" onclick="selectType('erector')">
+      <div class="type-icon">🔧</div>
+      <h3>Potential erector</h3>
+      <p>Resume suggests field erector experience. Foundational to intermediate questions.</p>
+    </div>
+    <div class="type-card" id="type-lead" onclick="selectType('lead')">
+      <div class="type-icon">📋</div>
+      <h3>Potential lead man</h3>
+      <p>Resume suggests crew lead experience. Intermediate to advanced questions.</p>
+    </div>
+  </div>
+  <div class="field">
+    <label>Question categories</label>
+    <div class="toggle-grid" id="cat-grid"></div>
+  </div>
+  <div class="field">
+    <label>Number of questions</label>
+    <div class="toggle-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="toggle on" data-q="5" onclick="pickQ(this)">5 quick</div>
+      <div class="toggle" data-q="10" onclick="pickQ(this)">10</div>
+      <div class="toggle" data-q="15" onclick="pickQ(this)">15</div>
+      <div class="toggle" data-q="25" onclick="pickQ(this)">All 25</div>
+    </div>
+  </div>
+  <button class="btn-main" id="start-btn" onclick="startInterview()" disabled>Select applicant type to begin</button>
+</div>
+</div>
+
+<!-- INTERVIEW -->
+<div class="screen" id="s-interview">
+<div class="interview-top">
+  <div class="cand-pill">Interviewing: <b id="d-name"></b></div>
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="q-num" id="q-num">1 / 10</div>
+</div>
+<div class="card">
+  <div class="q-meta">
+    <span class="level-badge" id="q-badge"></span>
+    <span class="cat-tag" id="q-cat"></span>
+  </div>
+  <div class="q-text" id="q-text"></div>
+  <div class="hint-box">
+    <button class="hint-toggle" onclick="toggleHint()">
+      <span class="hint-arrow" id="h-arrow">▶</span>
+      <span>show what a strong answer looks like</span>
+    </button>
+    <div class="hint-content" id="h-body"></div>
+  </div>
+  <div class="score-row">
+    <div class="score-btn" id="btn-good" onclick="scoreQ('good')">Strong answer</div>
+    <div class="score-btn" id="btn-ok" onclick="scoreQ('ok')">Partial / unsure</div>
+    <div class="score-btn" id="btn-bad" onclick="scoreQ('bad')">Weak / wrong</div>
+  </div>
+  <textarea class="notes-box" id="notes" placeholder="Notes on their answer (optional)..."></textarea>
+  <div class="nav-row">
+    <button class="skip-link" onclick="skip()">Skip this question</button>
+    <button class="btn-outline" onclick="nextQ()">Next &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- CERTS + FINAL QUESTIONS -->
+<div class="screen" id="s-certs">
+<div class="interview-top">
+  <div class="cand-pill">Interviewing: <b id="d-name2"></b></div>
+  <div style="font-size:13px;color:#aaa">Final questions</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Certifications &amp; licenses</div>
+  <div class="card-sub">Check all that the applicant currently holds.</div>
+  <div class="cert-grid" id="cert-grid"></div>
+</div>
+
+<div class="card">
+  <div class="card-title">Strongest areas of work</div>
+  <div class="card-sub">Select all that apply. For roofing, select the specific roof types they've worked.</div>
+  <div id="specialty-list"></div>
+</div>
+
+<div class="card">
+  <div class="card-title">Languages spoken</div>
+  <div class="lang-grid" id="lang-grid"></div>
+</div>
+
+<div class="card">
+  <div class="card-title">Logistics &amp; availability</div>
+  <div class="three-col" style="margin-bottom:1rem">
+    <div class="logi-card">
+      <div class="logi-label">Reliable transportation?</div>
+      <div class="logi-btns">
+        <div class="logi-btn" id="trans-yes" onclick="setLogi('trans','yes')">Yes</div>
+        <div class="logi-btn" id="trans-no" onclick="setLogi('trans','no')">No</div>
+      </div>
+    </div>
+    <div class="logi-card">
+      <div class="logi-label">Has own tools?</div>
+      <div class="logi-btns">
+        <div class="logi-btn" id="tools-yes" onclick="setLogi('tools','yes')">Yes</div>
+        <div class="logi-btn" id="tools-no" onclick="setLogi('tools','no')">No</div>
+      </div>
+    </div>
+    <div class="logi-card">
+      <div class="logi-label">Can read plans?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">
+        <div class="logi-btn" id="plans-yes" onclick="setLogi('plans','yes')">Yes</div>
+        <div class="logi-btn" id="plans-some" onclick="setLogi('plans','some')" style="font-size:12px">Somewhat</div>
+        <div class="logi-btn" id="plans-no" onclick="setLogi('plans','no')">No</div>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <label>How soon are they available?</label>
+    <select class="avail-select" id="avail-select">
+      <option value="">-- select --</option>
+      <option value="Immediately">Immediately</option>
+      <option value="1 week">1 week</option>
+      <option value="2 weeks">2 weeks</option>
+      <option value="3 weeks">3 weeks</option>
+      <option value="1 month">1 month</option>
+      <option value="1+ months">More than 1 month</option>
+    </select>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Interviewer ratings</div>
+  <div class="card-sub">Rate the applicant across each dimension based on your gut feel from the full conversation.</div>
+
+  <div class="slider-row">
+    <div class="slider-label-row">
+      <div><div class="slider-label">Productivity potential</div><div class="slider-desc">How hard-working and motivated do they seem?</div></div>
+      <div class="slider-val" id="prod-val">5</div>
+    </div>
+    <input type="range" min="1" max="10" value="5" step="1" id="prod-slider" oninput="document.getElementById('prod-val').textContent=this.value" />
+    <div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:1rem">
+    <div class="slider-label-row">
+      <div><div class="slider-label">Safety awareness</div><div class="slider-desc">How safety-minded do they come across?</div></div>
+      <div class="slider-val" id="safe-val">5</div>
+    </div>
+    <input type="range" min="1" max="10" value="5" step="1" id="safe-slider" oninput="document.getElementById('safe-val').textContent=this.value" />
+    <div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:1rem">
+    <div class="slider-label-row">
+      <div><div class="slider-label">Professionalism</div><div class="slider-desc">How professional do they present — communication, attitude, reliability signals?</div></div>
+      <div class="slider-val" id="prof-val">5</div>
+    </div>
+    <input type="range" min="1" max="10" value="5" step="1" id="prof-slider" oninput="document.getElementById('prof-val').textContent=this.value" />
+    <div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:1rem">
+    <div class="slider-label-row">
+      <div><div class="slider-label">Skill level impression</div><div class="slider-desc">How skilled do they actually seem based on the whole interview?</div></div>
+      <div class="slider-val" id="skill-val">5</div>
+    </div>
+    <input type="range" min="1" max="10" value="5" step="1" id="skill-slider" oninput="document.getElementById('skill-val').textContent=this.value" />
+    <div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:1rem">
+    <div class="slider-label-row">
+      <div><div class="slider-label">Overall rating</div><div class="slider-desc">All things considered, how would you rate this person?</div></div>
+      <div class="slider-val" id="overall-val">5</div>
+    </div>
+    <input type="range" min="1" max="10" value="5" step="1" id="overall-slider" oninput="document.getElementById('overall-val').textContent=this.value" />
+    <div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:1rem">
+    <div class="slider-label-row">
+      <div><div class="slider-label">Willingness to travel</div><div class="slider-desc">How willing are they to travel for extended jobs?</div></div>
+      <div class="slider-val" id="travel-val">5</div>
+    </div>
+    <input type="range" min="1" max="10" value="5" step="1" id="travel-slider" oninput="document.getElementById('travel-val').textContent=this.value" />
+    <div class="slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+  </div>
+
+  <div style="margin-top:1.25rem;margin-bottom:1rem">
+    <div style="font-size:14px;font-weight:500;color:#1a1a18;margin-bottom:.3rem">Work style</div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:.75rem">What kind of worker are they looking to be?</div>
+    <div style="display:flex;flex-direction:column;gap:8px" id="workstyle-btns">
+      <div class="workstyle-btn" id="ws-low" onclick="setWorkStyle('low')">
+        <div class="ws-label">Low — stay close to home</div>
+        <div class="ws-desc">Wants local or regional work. Prefers to take significant time off between jobs. Not interested in long stretches away.</div>
+      </div>
+      <div class="workstyle-btn" id="ws-medium" onclick="setWorkStyle('medium')">
+        <div class="ws-label">Medium — work hard, need some breaks</div>
+        <div class="ws-desc">Willing to travel and put in long stretches but needs a few weeks off here and there throughout the year to recharge.</div>
+      </div>
+      <div class="workstyle-btn" id="ws-high" onclick="setWorkStyle('high')">
+        <div class="ws-label">High — maximum hours, always working</div>
+        <div class="ws-desc">Wants to work as many hours as possible year-round. Doesn't want time off. Will go wherever the work is. All gas, no brakes.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.25rem;margin-bottom:1.1rem">
+    <div style="font-size:14px;font-weight:500;color:#1a1a18;margin-bottom:.3rem">Outside issues</div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:.75rem">Does this applicant have any issues outside of work that could affect reliability or availability?</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="logi-btn" id="issues-no" onclick="setLogi('issues','no')">No issues noted</div>
+      <div class="logi-btn" id="issues-yes" onclick="setLogi('issues','yes')">Yes — has concerns</div>
+    </div>
+  </div>
+
+  <div class="field" style="margin-bottom:0">
+    <label>Additional interviewer notes</label>
+    <textarea class="notes-box" id="final-notes" placeholder="Overall impressions, strengths, concerns, anything that stood out..." style="min-height:80px;margin-bottom:0"></textarea>
+  </div>
+</div>
+<button class="btn-main" onclick="showResults()">Generate recommendation &rarr;</button>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="s-results">
+<div class="card">
+  <div class="result-hero">
+    <div class="res-candidate" id="r-name"></div>
+    <div class="res-contact" id="r-contact"></div>
+    <div class="res-type-badge" id="r-type-badge"></div>
+    <div class="score-circle" id="r-circle"></div>
+    <div class="res-level" id="r-level"></div>
+    <div class="res-sub" id="r-sub"></div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="metric-val v-good" id="m-good"></div><div class="metric-lbl">strong answers</div></div>
+    <div class="metric"><div class="metric-val v-ok" id="m-ok"></div><div class="metric-lbl">partial answers</div></div>
+    <div class="metric"><div class="metric-val v-bad" id="m-bad"></div><div class="metric-lbl">weak / wrong</div></div>
+  </div>
+</div>
+
+<div class="wage-box" id="wage-box">
+  <div class="wage-box-title">Recommended pay range</div>
+  <div class="wage-rec" id="wage-rec"></div>
+  <div class="wage-rec-sub" id="wage-rec-sub"></div>
+  <div class="wage-entry-row">
+    <div>
+      <div class="wage-entry-label">Wage offered ($/hr)</div>
+      <input class="wage-input" type="text" id="wage-input" placeholder="e.g. 24.00" />
+    </div>
+    <div>
+      <div class="wage-entry-label">Hire status</div>
+      <div class="status-btns">
+        <div class="status-btn" id="stat-accepted" onclick="setStatus('accepted')">Accepted</div>
+        <div class="status-btn" id="stat-thinking" onclick="setStatus('thinking')">Thinking</div>
+        <div class="status-btn" id="stat-denied" onclick="setStatus('denied')">Denied</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rec-box" id="rec-box">
+  <h3 id="rec-title"></h3>
+  <p id="rec-text"></p>
+</div>
+<div class="level-box">
+  <h3 id="lv-title"></h3>
+  <p id="lv-desc"></p>
+</div>
+
+<div class="card">
+  <div class="card-title">Strongest areas</div>
+  <div id="r-specs"></div>
+</div>
+
+<div class="data-grid">
+  <div class="data-card">
+    <div class="data-card-title">Interviewer ratings</div>
+    <div class="data-item"><span class="data-key">Productivity</span><span class="data-val" id="r-prod"></span></div>
+    <div class="data-item"><span class="data-key">Safety awareness</span><span class="data-val" id="r-safe"></span></div>
+    <div class="data-item"><span class="data-key">Professionalism</span><span class="data-val" id="r-prof"></span></div>
+    <div class="data-item"><span class="data-key">Skill impression</span><span class="data-val" id="r-skill"></span></div>
+    <div class="data-item"><span class="data-key">Overall rating</span><span class="data-val" id="r-overall"></span></div>
+    <div class="data-item"><span class="data-key">Willingness to travel</span><span class="data-val" id="r-travel"></span></div>
+    <div class="data-item"><span class="data-key">Work style</span><span class="data-val" id="r-workstyle"></span></div>
+    <div class="data-item"><span class="data-key">Outside issues</span><span class="data-val" id="r-issues"></span></div>
+    <div class="data-item"><span class="data-key">Can read plans</span><span class="data-val" id="r-plans"></span></div>
+    <div class="data-item"><span class="data-key">Languages</span><span class="data-val" id="r-langs"></span></div>
+  </div>
+  <div class="data-card">
+    <div class="data-card-title">Logistics</div>
+    <div class="data-item"><span class="data-key">Location</span><span class="data-val" id="r-location"></span></div>
+    <div class="data-item"><span class="data-key">Transportation</span><span class="data-val" id="r-trans"></span></div>
+    <div class="data-item"><span class="data-key">Has tools</span><span class="data-val" id="r-tools"></span></div>
+    <div class="data-item"><span class="data-key">Available</span><span class="data-val" id="r-avail"></span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="data-card-title" style="margin-bottom:.75rem">Certifications held</div>
+  <div id="r-certs"></div>
+</div>
+
+<div class="card" id="final-notes-card" style="display:none">
+  <div class="data-card-title" style="margin-bottom:.5rem">Interviewer notes</div>
+  <div style="font-size:13px;color:#555;line-height:1.65;font-style:italic" id="r-final-notes"></div>
+</div>
+
+<div class="card">
+  <div class="breakdown-title">Question-by-question breakdown</div>
+  <div id="ans-list"></div>
+</div>
+
+<button class="btn-main no-print" id="save-airtable-btn" onclick="saveToAirtable()" style="margin-bottom:.75rem">Save to Airtable</button>
+<button class="print-btn no-print" onclick="printReport()">Print report</button>
+<button class="btn-main no-print" onclick="restart()">Start new interview</button>
+</div>
+
+</div><!-- /page -->
+
+<!-- PRINT REPORT (hidden until print) -->
+<div id="print-report"></div>
+
+<script>
+const QS=[
+  {id:101,lv:'l1',lvn:'Basic',cat:'Terminology',tier:'erector',priority:true,q:"Where does eave trim go, and where does rake trim go?",hint:"<span class='good'>Good:</span> <strong>Eave trim</strong> goes along the bottom horizontal edge where the roof meets the sidewall (the eave). <strong>Rake trim</strong> goes along the angled edge at the gable ends — the sloped edge of the roof from the ridge down to the eave corner. Getting these mixed up = they haven't done much trim work. Not knowing either = very limited experience."},
+  {id:102,lv:'l1',lvn:'Basic',cat:'Terminology',tier:'erector',priority:true,q:"What's the difference between a girt and a purlin?",hint:"<span class='good'>Good:</span> A <strong>girt</strong> is on the <em>wall</em> — wall panels attach to it. A <strong>purlin</strong> is on the <em>roof</em> — roof panels attach to it. Both are typically Z-shaped secondary members. Can't explain wall vs. roof = red flag. This is one of the most telling basic questions."},
+  {id:103,lv:'l2',lvn:'Intermediate',cat:'Terminology',tier:'erector',priority:true,q:"Have you worked with any specific manufacturers — Butler, Nucor, Metallic Building, Robertson, Ceco, VP Buildings? If so, which ones?",hint:"<span class='good'>Good:</span> Many experienced erectors have done 10–20 buildings without ever knowing the manufacturer's name — that's normal. If they do know names, it signals either sales-side exposure or a higher level of engagement with the trade. Don't penalize for not knowing. <span class='good'>What to listen for:</span> Do they recognize any names when prompted? Can they describe differences in how buildings go together? That's the real signal, not the name itself."},
+  {id:104,lv:'l3',lvn:'Advanced',cat:'Materials',tier:'lead',priority:true,q:"Have you ever installed IMP roof or wall panels? If so, do you know how to operate a vacuum lifter?",hint:"<span class='good'>Good:</span> IMP (Insulated Metal Panel) installation is a specialty skill. A <strong>vacuum lifter</strong> is the tool used to safely handle and position large, heavy IMP panels — you cannot do it by hand safely. Someone who has done IMP work and knows what a vacuum lifter is has real specialized experience. If they've done IMP but don't know the vacuum lifter, they may have only assisted. If they've never heard of it, they haven't done true IMP work."},
+  {id:1,lv:'l1',lvn:'Basic',cat:'Terminology',tier:'erector',q:"What's the difference between a girt and a purlin?",hint:"<span class='good'>Good:</span> A girt is on the <em>wall</em> — wall panels attach to it. A purlin is on the <em>roof</em> — roof panels attach to it. Both are typically Z-shaped. Can't explain wall vs. roof = red flag."},
+  {id:2,lv:'l1',lvn:'Basic',cat:'Terminology',tier:'erector',q:"What's the difference between a column and a rafter?",hint:"<span class='good'>Good:</span> Column = vertical member carrying load to the foundation. Rafter = angled/horizontal top of the frame supporting the roof. Together they form the rigid frame."},
+  {id:3,lv:'l1',lvn:'Basic',cat:'Terminology',tier:'erector',q:"What does 'eave' mean, and where is the eave strut?",hint:"<span class='good'>Good:</span> The eave is where the roof meets the sidewall. The eave strut is the secondary member right at that junction — both wall panel and roof panel attach to it."},
+  {id:4,lv:'l1',lvn:'Basic',cat:'Terminology',tier:'erector',q:"What's a bay, and how do you count them on a job?",hint:"<span class='good'>Good:</span> A bay is the space between two adjacent rigid frames, center-to-center. A 100-ft building with frames every 25 ft = 4 bays."},
+  {id:5,lv:'l1',lvn:'Basic',cat:'Terminology',tier:'erector',q:"What's the difference between primary framing and secondary framing?",hint:"<span class='good'>Good:</span> Primary = the rigid frame (columns + rafters). Secondary = girts, purlins, eave struts. Secondary members span between frames and support the panels."},
+  {id:6,lv:'l1',lvn:'Basic',cat:'Terminology',tier:'erector',q:"What is base angle (base trim) and what does it do?",hint:"<span class='good'>Good:</span> Trim piece running along the bottom of the wall at the slab. Gives the wall panel a starting point and seals the building at grade."},
+  {id:7,lv:'l2',lvn:'Intermediate',cat:'Process',tier:'erector',q:"Which bay do you always start erecting first, and why?",hint:"<span class='good'>Good:</span> Always the braced bay — the one with X-bracing. It's the rigid anchor. Once plumbed and braced it stabilizes everything else. <span class='bad'>Red flag:</span> 'It doesn't matter.'"},
+  {id:8,lv:'l2',lvn:'Intermediate',cat:'Process',tier:'erector',q:"When do you fully tighten the bolts — as you go, or at the end?",hint:"<span class='good'>Good:</span> Leave bolts snug-tight until the whole frame is plumbed and squared, then final-tighten. Tightening early locks in misalignment."},
+  {id:9,lv:'l2',lvn:'Intermediate',cat:'Process',tier:'erector',q:"What's the purpose of temporary erection bracing, and whose job is it?",hint:"<span class='good'>Good:</span> Stabilizes the building during erection before permanent bracing is complete. The erector is responsible — not the manufacturer."},
+  {id:10,lv:'l2',lvn:'Intermediate',cat:'Process',tier:'erector',q:"How do you check if a building is plumb and square before paneling?",hint:"<span class='good'>Good:</span> Plumb with level or plumb bob on columns. Square by measuring diagonals corner-to-corner (both ways match). Check ridge is straight and eave heights consistent."},
+  {id:11,lv:'l2',lvn:'Intermediate',cat:'Process',tier:'erector',q:"What's a flange brace, and when do you install them?",hint:"<span class='good'>Good:</span> Small steel member connecting bottom flange of a purlin/rafter to prevent lateral buckling. Installed per locations on the erection drawings."},
+  {id:12,lv:'l2',lvn:'Intermediate',cat:'Process',tier:'erector',q:"On Z-purlins, does orientation matter? Explain the nesting rule.",hint:"<span class='good'>Good:</span> Yes — Z-purlins lap/nest for continuity. Orientation alternates by bay (2⅛\" flange up on odd bays, down on even). Wrong way = lap bolts don't line up."},
+  {id:13,lv:'l2',lvn:'Intermediate',cat:'Tools',tier:'erector',q:"What is a spud wrench, and what do you use it for?",hint:"<span class='good'>Good:</span> Tapered handle end used to align bolt holes in steel members before driving bolts. Every iron worker knows this. If they don't, they haven't worked structural steel."},
+  {id:14,lv:'l2',lvn:'Intermediate',cat:'Tools',tier:'erector',q:"What kind of screws go on panels, and what's the washer for?",hint:"<span class='good'>Good:</span> Self-drilling, self-tapping screws with a neoprene-backed washer that seals the penetration. Clutch on the screw gun must disengage when the washer seats."},
+  {id:15,lv:'l2',lvn:'Intermediate',cat:'Materials',tier:'erector',q:"What is mastic (butyl) tape used for on a metal building?",hint:"<span class='good'>Good:</span> Seals panel side laps on the roof — especially at the ridge. Prevents water wicking under laps. Guys who haven't done PEMB roofing may not know this."},
+  {id:16,lv:'l3',lvn:'Advanced',cat:'Process',tier:'lead',q:"Walk me through the sequence for erecting a rigid frame from the ground up.",hint:"<span class='good'>Good:</span> Columns up first, guyed temporarily. Rafter set on top, bolted at peak and knee. Endwalls: columns first, then endwall rafter caps them. Should answer without hesitation."},
+  {id:17,lv:'l3',lvn:'Advanced',cat:'Process',tier:'lead',q:"Why can't you erect on green concrete, and how long do you wait?",hint:"<span class='good'>Good:</span> Green concrete can't handle anchor bolt loads — bolts pull out, slab edges spall. Standard Portland cement = 7-day minimum. High-early-strength = 3-day minimum."},
+  {id:18,lv:'l3',lvn:'Advanced',cat:'Tools',tier:'lead',q:"What's a drift pin, and how is it different from a spud wrench?",hint:"<span class='good'>Good:</span> A drift pin is tapered and driven with a hammer through misaligned holes. A spud wrench also aligns holes but works as a wrench. Drift pins are for bigger misalignment."},
+  {id:19,lv:'l3',lvn:'Advanced',cat:'Process',tier:'lead',q:"What actually goes wrong if you skip plumbing the first bay before proceeding?",hint:"<span class='good'>Good:</span> Every subsequent frame follows the same error. Building racks, panels don't fit, trim gaps open, structure may not meet engineered design. Much harder to fix mid-job."},
+  {id:20,lv:'l3',lvn:'Advanced',cat:'Process',tier:'lead',q:"What is X-bracing doing structurally, and what happens if you over-tighten it?",hint:"<span class='good'>Good:</span> Transfers wind and longitudinal loads to the foundation. Without it the building racks. Over-tightening can permanently deform the frames."},
+  {id:21,lv:'l3',lvn:'Advanced',cat:'Drawings',tier:'lead',q:"What is an anchor bolt plan and what does it tell you?",hint:"<span class='good'>Good:</span> Top-down drawing: bolt locations, diameters, projection above slab, column reactions. What the concrete contractor works from. Good erectors verify this before framing starts."},
+  {id:22,lv:'l3',lvn:'Advanced',cat:'Drawings',tier:'lead',q:"What are piece marks and how do you use them on site?",hint:"<span class='good'>Good:</span> Alphanumeric labels on each member matching the erection drawings. Good crews sort all steel by piece mark before lifting — don't rummage through piles mid-erection."},
+  {id:23,lv:'l4',lvn:'Lead/Foreman',cat:'Judgment',tier:'lead',q:"You find a column is 3 inches off the anchor bolt layout while setting frames. What do you do?",hint:"<span class='good'>Good:</span> Stop. Don't force it. Notify GC, get engineer or manufacturer rep involved. <span class='bad'>Red flag:</span> 'Just shim it and move on.'"},
+  {id:24,lv:'l4',lvn:'Lead/Foreman',cat:'Judgment',tier:'lead',q:"A crew member wants to cut a primary frame member in the field to make something fit. What do you say?",hint:"<span class='good'>Good:</span> Hard no. Primary members are engineered to exact specs — cutting compromises structural integrity. Stop work, contact manufacturer engineering, document everything."},
+  {id:25,lv:'l4',lvn:'Lead/Foreman',cat:'Judgment',tier:'lead',q:"What are the key rules around insulation installation — condensation and safety?",hint:"<span class='good'>Good:</span> Keep insulation off the slab (no moisture wicking). Vapor barrier faces warm side per climate. Insulation has zero structural strength — never stand on it or use as a platform."},
+];
+
+const CERTS=['Forklift','Scissor Lift','Aerial Lift','OSHA 10','OSHA 30','Fall Protection','Certified Rigger'];
+const LANGS=['English','Spanish','Portuguese','French','Other'];
+const SPECIALTIES=[
+  {id:'roofing',name:'Roofing',subs:['SSR (Standing Seam)','Screw Down PBR','IMP Roof']},
+  {id:'primary',name:'Primary Steel',subs:[]},
+  {id:'secondary',name:'Secondary Steel',subs:[]},
+  {id:'wall',name:'Wall Sheeting & Trim',subs:[]},
+  {id:'leadership',name:'Leadership / Crew Management',subs:[]},
+];
+const LEVELS=[
+  {min:0,max:35,title:'Erector Level 1',wageMin:21,wageMax:24,wageSuggest:'$21–$24/hr',desc:'Entry-level erector. Basic exposure but still learning terminology, tools, and sequencing. Best suited for ground-level work under direct supervision. Needs mentorship to develop.'},
+  {min:36,max:54,title:'Erector Level 2',wageMin:26,wageMax:27,wageSuggest:'$26–$27/hr',desc:'Competent field worker. Understands the basics, names parts correctly, knows the process. Can work productively with minimal supervision on routine tasks. Needs guidance on complex situations.'},
+  {min:55,max:100,title:'Erector Level 3',wageMin:28,wageMax:30,wageSuggest:'$28–$30/hr',desc:'Solid erector. Strong process knowledge, understands the why behind the rules, handles most field situations independently. Ready to mentor newer crew. Top of the erector tier — a strong field asset.'},
+];
+const CATS=[...new Set(QS.map(q=>q.cat))];
+
+let selCats=new Set(CATS);
+let selQCount=5;
+let candName='',candPhone='',candEmail='',candLocation='';
+let applicantType='';
+let sessionQs=[];
+let idx=0;
+let answers=[];
+let hintOpen=false;
+let logiState={trans:null,tools:null,plans:null};
+let checkedCerts=new Set();
+let checkedLangs=new Set();
+let checkedSpecs={};
+let checkedSubSpecs={};
+let hireStatus=null;
+let currentLevel=null;
+let workStyle=null;
+
+// === AIRTABLE INTEGRATION ===
+// Paste the webhook URL from your Airtable Automation ("When webhook received" trigger) below.
+const WEBHOOK_URL='PASTE_YOUR_AIRTABLE_WEBHOOK_URL_HERE';
+let lastResult=null;
+
+function welcomeAnswer(yes){
+  if(!yes){show('s-no-exp');return;}
+  show('s-script');
+}
+
+function initCats(){
+  const g=document.getElementById('cat-grid');g.innerHTML='';
+  CATS.forEach(c=>{
+    const d=document.createElement('div');d.className='toggle on';d.textContent=c;
+    d.onclick=()=>{if(selCats.has(c)){selCats.delete(c);d.classList.remove('on');}else{selCats.add(c);d.classList.add('on');}};
+    g.appendChild(d);
+  });
+}
+
+function initCerts(){
+  const g=document.getElementById('cert-grid');g.innerHTML='';checkedCerts=new Set();
+  CERTS.forEach(c=>{
+    const d=document.createElement('div');d.className='cert-item';
+    d.innerHTML=`<div class="cert-check" id="chk-${c.replace(/\s/g,'_')}"></div><div class="cert-label">${c}</div>`;
+    d.onclick=()=>{
+      if(checkedCerts.has(c)){checkedCerts.delete(c);d.classList.remove('checked');document.getElementById('chk-'+c.replace(/\s/g,'_')).textContent='';}
+      else{checkedCerts.add(c);d.classList.add('checked');document.getElementById('chk-'+c.replace(/\s/g,'_')).textContent='✓';}
+    };
+    g.appendChild(d);
+  });
+}
+
+function initLangs(){
+  const g=document.getElementById('lang-grid');g.innerHTML='';checkedLangs=new Set();
+  LANGS.forEach(l=>{
+    const d=document.createElement('div');d.className='cert-item';
+    d.innerHTML=`<div class="cert-check" id="lchk-${l}"></div><div class="cert-label">${l}</div>`;
+    d.onclick=()=>{
+      if(checkedLangs.has(l)){checkedLangs.delete(l);d.classList.remove('checked');document.getElementById('lchk-'+l).textContent='';}
+      else{checkedLangs.add(l);d.classList.add('checked');document.getElementById('lchk-'+l).textContent='✓';}
+    };
+    g.appendChild(d);
+  });
+}
+
+function initSpecialties(){
+  const g=document.getElementById('specialty-list');g.innerHTML='';
+  checkedSpecs={};checkedSubSpecs={};
+  SPECIALTIES.forEach(s=>{
+    checkedSpecs[s.id]=false;checkedSubSpecs[s.id]=new Set();
+    const wrap=document.createElement('div');wrap.className='specialty-item';
+    const header=document.createElement('div');header.className='specialty-header';header.id='spec-hdr-'+s.id;
+    header.innerHTML=`<div class="specialty-check" id="spec-chk-${s.id}"></div><div class="specialty-name">${s.name}</div>`;
+    header.onclick=()=>{
+      checkedSpecs[s.id]=!checkedSpecs[s.id];
+      header.classList.toggle('checked',checkedSpecs[s.id]);
+      document.getElementById('spec-chk-'+s.id).textContent=checkedSpecs[s.id]?'✓':'';
+      if(s.subs.length){document.getElementById('spec-sub-'+s.id).classList.toggle('open',checkedSpecs[s.id]);}
+    };
+    wrap.appendChild(header);
+    if(s.subs.length){
+      const sub=document.createElement('div');sub.className='specialty-sub';sub.id='spec-sub-'+s.id;
+      const subGrid=document.createElement('div');subGrid.className='specialty-sub-grid';
+      s.subs.forEach(sv=>{
+        const si=document.createElement('div');si.className='sub-item';
+        si.innerHTML=`<div class="sub-check" id="subchk-${sv.replace(/[\s()\/]/g,'_')}"></div><span>${sv}</span>`;
+        si.onclick=(e)=>{e.stopPropagation();
+          if(checkedSubSpecs[s.id].has(sv)){checkedSubSpecs[s.id].delete(sv);si.classList.remove('checked');document.getElementById('subchk-'+sv.replace(/[\s()\/]/g,'_')).textContent='';}
+          else{checkedSubSpecs[s.id].add(sv);si.classList.add('checked');document.getElementById('subchk-'+sv.replace(/[\s()\/]/g,'_')).textContent='✓';}
+        };
+        subGrid.appendChild(si);
+      });
+      sub.appendChild(subGrid);wrap.appendChild(sub);
+    }
+    g.appendChild(wrap);
+  });
+}
+
+function selectType(t){
+  applicantType=t;
+  document.getElementById('type-erector').classList.toggle('selected',t==='erector');
+  document.getElementById('type-lead').classList.toggle('selected',t==='lead');
+  const btn=document.getElementById('start-btn');btn.disabled=false;btn.textContent='Start interview';
+}
+
+function pickQ(el){
+  document.querySelectorAll('[data-q]').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');selQCount=parseInt(el.dataset.q);
+}
+
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+function startInterview(){
+  candName=document.getElementById('inp-name').value.trim()||'Applicant';
+  candPhone=document.getElementById('inp-phone').value.trim();
+  candEmail=document.getElementById('inp-email').value.trim();
+  candLocation=document.getElementById('inp-location').value.trim();
+  let pool=QS.filter(q=>selCats.has(q.cat));
+  if(applicantType==='erector') pool=pool.filter(q=>q.tier==='erector');
+  if(!pool.length) pool=QS.filter(q=>q.tier==='erector');
+  // priority questions always go first, shuffled among themselves; rest shuffled after
+  const priority=shuffle(pool.filter(q=>q.priority));
+  const rest=shuffle(pool.filter(q=>!q.priority));
+  const combined=[...priority,...rest];
+  sessionQs=combined.slice(0,Math.min(selQCount,combined.length));
+  idx=0;answers=sessionQs.map(()=>({score:null,notes:''}));
+  show('s-interview');loadQ();
+}
+
+function loadQ(){
+  hintOpen=false;
+  document.getElementById('h-body').classList.remove('open');
+  document.getElementById('h-arrow').classList.remove('open');
+  const q=sessionQs[idx],a=answers[idx];
+  document.getElementById('prog-fill').style.width=Math.round((idx/sessionQs.length)*100)+'%';
+  document.getElementById('q-num').textContent=(idx+1)+' / '+sessionQs.length;
+  document.getElementById('d-name').textContent=candName;
+  const b=document.getElementById('q-badge');b.textContent=q.lvn;b.className='level-badge badge-'+q.lv;
+  document.getElementById('q-cat').textContent=q.cat;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('h-body').innerHTML=q.hint;
+  document.getElementById('notes').value=a.notes;
+  ['good','ok','bad'].forEach(s=>{document.getElementById('btn-'+s).className='score-btn'+(a.score===s?' sel-'+s:'');});
+}
+
+function toggleHint(){
+  hintOpen=!hintOpen;
+  document.getElementById('h-body').classList.toggle('open',hintOpen);
+  document.getElementById('h-arrow').classList.toggle('open',hintOpen);
+}
+
+function scoreQ(s){
+  answers[idx].score=s;
+  ['good','ok','bad'].forEach(sc=>{document.getElementById('btn-'+sc).className='score-btn'+(s===sc?' sel-'+s:'');});
+}
+
+function nextQ(){
+  answers[idx].notes=document.getElementById('notes').value;
+  if(idx<sessionQs.length-1){idx++;loadQ();}
+  else goToCerts();
+}
+
+function skip(){
+  answers[idx].score=null;answers[idx].notes=document.getElementById('notes').value;
+  if(idx<sessionQs.length-1){idx++;loadQ();}
+  else goToCerts();
+}
+
+function goToCerts(){
+  document.getElementById('d-name2').textContent=candName;
+  logiState={trans:null,tools:null,plans:null,issues:null};
+  workStyle=null;
+  document.getElementById('avail-select').value='';
+  ['prod','safe','prof','skill','overall','travel'].forEach(id=>{
+    document.getElementById(id+'-slider').value=5;
+    document.getElementById(id+'-val').textContent='5';
+  });
+  document.getElementById('final-notes').value='';
+  ['trans','tools'].forEach(k=>['yes','no'].forEach(v=>document.getElementById(k+'-'+v).className='logi-btn'));
+  ['yes','some','no'].forEach(v=>document.getElementById('plans-'+v).className='logi-btn');
+  ['yes','no'].forEach(v=>document.getElementById('issues-'+v).className='logi-btn');
+  ['low','medium','high'].forEach(v=>document.getElementById('ws-'+v).className='workstyle-btn');
+  initCerts();initLangs();initSpecialties();
+  show('s-certs');window.scrollTo(0,0);
+}
+
+function setLogi(key,val){
+  logiState[key]=val;
+  if(key==='plans'){['yes','some','no'].forEach(v=>document.getElementById('plans-'+v).className='logi-btn'+(v===val?' sel-'+(val==='some'?'some':val):''));}
+  else{['yes','no'].forEach(v=>document.getElementById(key+'-'+v).className='logi-btn'+(v===val?' sel-'+val:''));}
+}
+
+function setWorkStyle(s){
+  workStyle=s;
+  ['low','medium','high'].forEach(v=>{
+    document.getElementById('ws-'+v).className='workstyle-btn'+(v===s?' ws-sel-'+s:'');
+  });
+}
+
+function setStatus(s){
+  hireStatus=s;
+  ['accepted','thinking','denied'].forEach(st=>document.getElementById('stat-'+st).className='status-btn'+(st===s?' sel-'+st:''));
+}
+
+function showResults(){
+  const strong=answers.filter(a=>a.score==='good').length;
+  const partial=answers.filter(a=>a.score==='ok').length;
+  const weak=answers.filter(a=>a.score==='bad').length;
+  const answered=strong+partial+weak;
+  const kScore=answered===0?0:Math.round(((strong*2)+partial)/(answered*2)*100);
+  const prodScore=parseInt(document.getElementById('prod-slider').value);
+  const safeScore=parseInt(document.getElementById('safe-slider').value);
+  const profScore=parseInt(document.getElementById('prof-slider').value);
+  const skillScore=parseInt(document.getElementById('skill-slider').value);
+  const overallScore=parseInt(document.getElementById('overall-slider').value);
+  const travelScore=parseInt(document.getElementById('travel-slider').value);
+  const avail=document.getElementById('avail-select').value||'Not specified';
+  const finalNotes=document.getElementById('final-notes').value.trim();
+  // composite: 50% knowledge, 15% productivity, 15% skill impression, 10% professionalism, 10% safety
+  const compositeScore=Math.round((kScore*0.50)+((prodScore/10)*100*0.15)+((skillScore/10)*100*0.15)+((profScore/10)*100*0.10)+((safeScore/10)*100*0.10));
+  const lv=LEVELS.find(l=>compositeScore>=l.min&&compositeScore<=l.max)||LEVELS[0];
+  currentLevel=lv;
+
+  document.getElementById('r-circle').className='score-circle '+(compositeScore>=55?'circle-good':compositeScore>=36?'circle-mid':'circle-low');
+  document.getElementById('r-circle').textContent=compositeScore+'%';
+  document.getElementById('r-name').textContent=candName;
+  document.getElementById('r-contact').textContent=[candPhone,candEmail,candLocation].filter(Boolean).join(' · ');
+  const tb=document.getElementById('r-type-badge');
+  tb.textContent=applicantType==='lead'?'Interviewed as: Potential Lead Man':'Interviewed as: Potential Erector';
+  tb.style.cssText=applicantType==='lead'?'background:#EEEDFE;color:#3C3489':'background:#EAF3DE;color:#3B6D11';
+  document.getElementById('r-level').textContent=lv.title;
+  document.getElementById('r-sub').textContent='Composite score: '+compositeScore+'% · '+answered+' of '+sessionQs.length+' answered';
+  document.getElementById('m-good').textContent=strong;
+  document.getElementById('m-ok').textContent=partial;
+  document.getElementById('m-bad').textContent=weak;
+  document.getElementById('wage-rec').textContent=lv.wageSuggest;
+  document.getElementById('wage-rec-sub').textContent='Recommended range for '+lv.title+'. Enter the actual wage offered below.';
+  document.getElementById('wage-input').value='';
+  hireStatus=null;
+  ['accepted','thinking','denied'].forEach(st=>document.getElementById('stat-'+st).className='status-btn');
+  document.getElementById('lv-title').textContent=lv.title+' — what this means';
+  document.getElementById('lv-desc').textContent=lv.desc;
+
+  // specialties
+  const specsEl=document.getElementById('r-specs');
+  const specLines=[];
+  SPECIALTIES.forEach(s=>{
+    if(checkedSpecs[s.id]){
+      let line=s.name;
+      const subs=[...checkedSubSpecs[s.id]];
+      if(subs.length) line+=' ('+subs.join(', ')+')';
+      specLines.push(line);
+    }
+  });
+  if(specLines.length){specsEl.innerHTML=specLines.map(l=>`<span class="spec-pill">${l}</span>`).join('');}
+  else{specsEl.innerHTML='<span style="font-size:13px;color:#aaa;font-style:italic">No specialties selected</span>';}
+
+  // data cards
+  const setVal=(id,val,cls)=>{const e=document.getElementById(id);e.textContent=val;e.className='data-val'+(cls?' '+cls:'');};
+  setVal('r-prod',prodScore+' / 10');
+  setVal('r-safe',safeScore+' / 10');
+  setVal('r-prof',profScore+' / 10');
+  setVal('r-skill',skillScore+' / 10');
+  setVal('r-overall',overallScore+' / 10');
+  setVal('r-travel',travelScore+' / 10');
+  const wsLabels={low:'Low — stay close to home',medium:'Medium — work hard, some breaks',high:'High — maximum hours, always on'};
+  setVal('r-workstyle',workStyle?wsLabels[workStyle]:'Not selected');
+  setVal('r-issues',logiState.issues==='yes'?'Yes — concerns noted':logiState.issues==='no'?'No issues':'Not answered', logiState.issues==='yes'?'bad':'');
+  const plansMap={yes:'Yes',some:'Somewhat',no:'No',null:'Not asked'};
+  setVal('r-plans',plansMap[logiState.plans]||'Not asked');
+  setVal('r-langs',[...checkedLangs].join(', ')||'Not specified');
+  setVal('r-location',candLocation||'Not specified');
+  const transEl=document.getElementById('r-trans');transEl.textContent=logiState.trans?logiState.trans.charAt(0).toUpperCase()+logiState.trans.slice(1):'Not asked';transEl.className='data-val'+(logiState.trans==='yes'?' good':logiState.trans==='no'?' bad':'');
+  const toolsEl=document.getElementById('r-tools');toolsEl.textContent=logiState.tools?logiState.tools.charAt(0).toUpperCase()+logiState.tools.slice(1):'Not asked';toolsEl.className='data-val'+(logiState.tools==='yes'?' good':logiState.tools==='no'?' bad':'');
+  setVal('r-avail',avail);
+
+  // certs
+  const certsEl=document.getElementById('r-certs');
+  certsEl.innerHTML=checkedCerts.size===0?'<span class="cert-none">No certifications reported</span>':'<div class="cert-result-list">'+[...checkedCerts].map(c=>`<span class="cert-pill">${c}</span>`).join('')+'</div>';
+
+  const fnCard=document.getElementById('final-notes-card');
+  if(finalNotes){fnCard.style.display='block';document.getElementById('r-final-notes').textContent='"'+finalNotes+'"';}
+  else{fnCard.style.display='none';}
+
+  // recommendation
+  const recBox=document.getElementById('rec-box');
+  const flags=[];
+  if(logiState.trans==='no')flags.push('no reliable transportation');
+  if(logiState.tools==='no')flags.push('no personal tools');
+  if(avail==='1+ months')flags.push('not available for over a month');
+  if(safeScore<=4)flags.push('low safety score ('+safeScore+'/10)');
+  if(prodScore<=4)flags.push('low productivity rating ('+prodScore+'/10)');
+  if(logiState.plans==='no')flags.push('cannot read plans');
+  let recClass,recTitleText,recBodyText;
+  if(compositeScore>=55){
+    recClass='rec-good';recTitleText='Recommended — '+lv.title;
+    recBodyText='This applicant scored well across knowledge, productivity, and safety. ';
+    if(checkedCerts.size>=3)recBodyText+='They hold '+checkedCerts.size+' certification(s) which is a strong positive. ';
+    else if(checkedCerts.size===0)recBodyText+='No certifications reported — require OSHA 10 before first deployment. ';
+    if(logiState.plans==='yes')recBodyText+='Can read erection drawings independently. ';
+    else if(logiState.plans==='some')recBodyText+='Can partially read plans — pair with an experienced crew member. ';
+    if(specLines.length)recBodyText+='Strongest areas: '+specLines.join(', ')+'. ';
+    recBodyText+=flags.length?'Watch for: '+flags.join(', ')+'.':'No major red flags noted.';
+  } else if(compositeScore>=36){
+    recClass='rec-mid';recTitleText='Possible hire — '+lv.title+' with close supervision';
+    recBodyText='Some PEMB knowledge but gaps are present. Knowledge: '+kScore+'%, productivity: '+prodScore+'/10, safety: '+safeScore+'/10. Needs mentorship starting at Level 1 tasks. ';
+    if(flags.length)recBodyText+='Concerns: '+flags.join(', ')+'. ';
+    recBodyText+='Recommend a probationary period with a senior crew before any independent work.';
+  } else {
+    recClass='rec-low';recTitleText='Not recommended at this time';
+    recBodyText='Did not demonstrate sufficient knowledge or qualifications. Knowledge: '+kScore+'%, productivity: '+prodScore+'/10, safety: '+safeScore+'/10. ';
+    if(flags.length)recBodyText+='Additional concerns: '+flags.join(', ')+'. ';
+    recBodyText+='May be worth reconsidering with more hands-on erection experience.';
+  }
+  recBox.className='rec-box '+recClass;
+  document.getElementById('rec-title').textContent=recTitleText;
+  document.getElementById('rec-text').textContent=recBodyText;
+
+  // question breakdown
+  const list=document.getElementById('ans-list');list.innerHTML='';
+  sessionQs.forEach((q,i)=>{
+    const a=answers[i];const s=a.score;
+    const dc=s==='good'?'dot-good':s==='ok'?'dot-ok':s==='bad'?'dot-bad':'dot-skip';
+    const lc=s==='good'?'lbl-good':s==='ok'?'lbl-ok':s==='bad'?'lbl-bad':'lbl-skip';
+    const lt=s==='good'?'Strong':s==='ok'?'Partial':s==='bad'?'Weak':'Skipped';
+    const row=document.createElement('div');row.className='ans-row';
+    row.innerHTML=`<div class="dot ${dc}"></div><div style="flex:1"><div class="ans-q">${q.q}</div>${a.notes?`<div class="ans-note">"${a.notes}"</div>`:''}</div><div class="ans-label ${lc}">${lt}</div>`;
+    list.appendChild(row);
+  });
+
+  // Stash everything saveToAirtable() needs
+  lastResult={
+    compositeScore,kScore,strong,partial,weak,answered,
+    prodScore,safeScore,profScore,skillScore,overallScore,travelScore,
+    avail,finalNotes,lv,specLines,recTitleText,recBodyText
+  };
+  const sb=document.getElementById('save-airtable-btn');
+  if(sb){sb.textContent='Save to Airtable';sb.disabled=false;sb.style.background='';}
+
+  show('s-results');window.scrollTo(0,0);
+}
+
+function saveToAirtable(){
+  if(!lastResult){alert('No result to save.');return;}
+  if(!WEBHOOK_URL||WEBHOOK_URL.indexOf('PASTE_')===0){
+    alert('Webhook URL not configured. Edit pemb_interview_tool.html and set WEBHOOK_URL to your Airtable Automation webhook.');
+    return;
+  }
+  const r=lastResult;
+  const wageOffered=parseFloat(document.getElementById('wage-input').value)||null;
+  const wsMap={low:'Low — stay close to home',medium:'Medium — work hard, some breaks',high:'High — maximum hours'};
+  const plansMap={yes:'Yes',some:'Somewhat',no:'No'};
+  const hireStatusMap={accepted:'Accepted',thinking:'Thinking',denied:'Denied'};
+  const qBreakdown=sessionQs.map((q,i)=>{
+    const a=answers[i];
+    const lbl=a.score==='good'?'STRONG':a.score==='ok'?'PARTIAL':a.score==='bad'?'WEAK':'SKIPPED';
+    return `[${lbl}] ${q.q}`+(a.notes?`\n  Notes: ${a.notes}`:'');
+  }).join('\n\n');
+
+  const payload={
+    'Candidate Name':candName,
+    'Phone':candPhone||null,
+    'Email':candEmail||null,
+    'Location':candLocation||null,
+    'Interview Date':new Date().toISOString(),
+    'Applicant Type':applicantType==='lead'?'Lead Man':'Erector',
+    'Composite Score':r.compositeScore/100,
+    'Level':r.lv.title,
+    'Knowledge Score':r.kScore/100,
+    'Strong Answers':r.strong,
+    'Partial Answers':r.partial,
+    'Weak Answers':r.weak,
+    'Questions Answered':r.answered,
+    'Total Questions':sessionQs.length,
+    'Productivity':r.prodScore,
+    'Safety Awareness':r.safeScore,
+    'Professionalism':r.profScore,
+    'Skill Impression':r.skillScore,
+    'Overall Rating':r.overallScore,
+    'Willingness to Travel':r.travelScore,
+    'Work Style':workStyle?wsMap[workStyle]:null,
+    'Outside Issues':logiState.issues==='yes'?'Yes — concerns noted':logiState.issues==='no'?'No issues':null,
+    'Transportation':logiState.trans==='yes'?'Yes':logiState.trans==='no'?'No':'Not asked',
+    'Has Tools':logiState.tools==='yes'?'Yes':logiState.tools==='no'?'No':'Not asked',
+    'Can Read Plans':logiState.plans?plansMap[logiState.plans]:'Not asked',
+    'Availability':r.avail,
+    'Certifications':[...checkedCerts],
+    'Languages':[...checkedLangs],
+    'Specialties':r.specLines.join('\n')||null,
+    'Recommended Wage Range':r.lv.wageSuggest,
+    'Wage Offered':wageOffered,
+    'Hire Status':hireStatus?hireStatusMap[hireStatus]:null,
+    'Recommendation Title':r.recTitleText,
+    'Recommendation':r.recBodyText,
+    'Interviewer Notes':r.finalNotes||null,
+    'Question Breakdown':qBreakdown
+  };
+
+  const btn=document.getElementById('save-airtable-btn');
+  btn.disabled=true;btn.textContent='Saving…';
+  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(resp=>{
+      if(!resp.ok)throw new Error('HTTP '+resp.status);
+      btn.textContent='✓ Saved to Airtable';btn.style.background='#3B6D11';
+    })
+    .catch(err=>{
+      btn.disabled=false;btn.textContent='Retry save to Airtable';btn.style.background='#A32D2D';
+      console.error('Airtable save failed',err);
+      alert('Save failed: '+err.message+'\n\nCheck the webhook URL and that the Airtable Automation is turned on.');
+    });
+}
+
+function printReport(){
+  const wageOffered=document.getElementById('wage-input').value.trim();
+  const statusLabels={accepted:'Accepted',thinking:'Thinking About It',denied:'Denied'};
+  const statusColors={accepted:'#3B6D11',thinking:'#854F0B',denied:'#A32D2D'};
+  const lv=currentLevel||LEVELS[0];
+  const compositeScore=parseInt(document.getElementById('r-circle').textContent)||0;
+  const prodScore=document.getElementById('prod-val').textContent;
+  const safeScore=document.getElementById('safe-val').textContent;
+  const profScore=document.getElementById('prof-val').textContent;
+  const skillScore=document.getElementById('skill-val').textContent;
+  const overallScore=document.getElementById('overall-val').textContent;
+  const travelScore=document.getElementById('travel-val').textContent;
+  const wsLabels={low:'Low — stay close to home',medium:'Medium — work hard, some breaks',high:'High — maximum hours, always on'};
+  const wsText=workStyle?wsLabels[workStyle]:'Not selected';
+  const issuesText=logiState.issues==='yes'?'Yes — concerns noted':logiState.issues==='no'?'No issues noted':'Not answered';
+  const avail=document.getElementById('avail-select').value||'Not specified';
+  const finalNotes=document.getElementById('final-notes').value.trim();
+  const specLines=[];
+  SPECIALTIES.forEach(s=>{
+    if(checkedSpecs[s.id]){let line=s.name;const subs=[...checkedSubSpecs[s.id]];if(subs.length)line+=' ('+subs.join(', ')+')';specLines.push(line);}
+  });
+  const plansMap={yes:'Yes',some:'Somewhat',no:'No',null:'Not asked'};
+  const recTitle=document.getElementById('rec-title').textContent;
+  const recText=document.getElementById('rec-text').textContent;
+  const recClass=document.getElementById('rec-box').className.includes('rec-good')?'pr-rec-good':document.getElementById('rec-box').className.includes('rec-mid')?'pr-rec-mid':'pr-rec-low';
+  const today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  let qRows='';
+  sessionQs.forEach((q,i)=>{
+    const a=answers[i];const s=a.score;
+    const dc=s==='good'?'good':s==='ok'?'ok':s==='bad'?'bad':'skip';
+    const lt=s==='good'?'Strong':s==='ok'?'Partial':s==='bad'?'Weak':'Skipped';
+    qRows+=`<div class="pr-q-row"><div class="pr-q-dot ${dc}"></div><div class="pr-q-text">${q.q}${a.notes?`<div class="pr-q-note">"${a.notes}"</div>`:''}</div><div class="pr-q-score ${dc}">${lt}</div></div>`;
+  });
+
+  const statusHtml=hireStatus?`<span class="pr-status-badge" style="border-color:${statusColors[hireStatus]};color:${statusColors[hireStatus]}">${statusLabels[hireStatus]}</span>`:'<span style="color:#aaa;font-size:10pt">Not entered</span>';
+
+  document.getElementById('print-report').innerHTML=`
+<div class="pr-header">
+  <div class="pr-company">Alpha Labor Co LLC — Erector Interview Report</div>
+  <div class="pr-name">${candName}</div>
+  <div class="pr-contact">${[candPhone,candEmail,candLocation].filter(Boolean).join('  ·  ')}</div>
+  <div class="pr-level-badge">${lv.title} — ${compositeScore}% composite score</div><br>
+  <div class="pr-score">Interviewed ${today} · ${applicantType==='lead'?'Potential Lead Man':'Potential Erector'} · ${sessionQs.length} questions</div>
+</div>
+
+<div class="pr-rec-box ${recClass}">
+  <div class="pr-rec-title">${recTitle}</div>
+  <div class="pr-rec-text">${recText}</div>
+</div>
+
+<div class="pr-wage-box">
+  <div style="font-size:9pt;color:#888;margin-bottom:6pt;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Pay</div>
+  <div class="pr-wage-row">
+    <div class="pr-wage-item"><label>Recommended range</label><span>${lv.wageSuggest}</span></div>
+    <div class="pr-wage-item"><label>Wage offered</label><span>${wageOffered?'$'+wageOffered+'/hr':'Not entered'}</span></div>
+    <div class="pr-wage-item"><label>Status</label><div style="margin-top:3pt">${statusHtml}</div></div>
+  </div>
+</div>
+
+<div class="pr-section">
+  <div class="pr-section-title">Strongest areas of work</div>
+  ${specLines.length?specLines.map(l=>`<span class="pr-pill pr-pill-blue">${l}</span>`).join(''):'<span style="color:#aaa;font-size:10pt;font-style:italic">None selected</span>'}
+</div>
+
+<div class="pr-section">
+  <div class="pr-section-title">Certifications held</div>
+  ${checkedCerts.size>0?[...checkedCerts].map(c=>`<span class="pr-pill">${c}</span>`).join(''):'<span style="color:#aaa;font-size:10pt;font-style:italic">None reported</span>'}
+</div>
+
+<div class="pr-section">
+  <div class="pr-section-title">Interviewer ratings</div>
+  <div class="pr-grid">
+    <div>
+      <div class="pr-row"><span class="pr-key">Productivity (1–10)</span><span class="pr-val">${prodScore} / 10</span></div>
+      <div class="pr-row"><span class="pr-key">Safety awareness (1–10)</span><span class="pr-val">${safeScore} / 10</span></div>
+      <div class="pr-row"><span class="pr-key">Professionalism (1–10)</span><span class="pr-val">${profScore} / 10</span></div>
+      <div class="pr-row"><span class="pr-key">Skill impression (1–10)</span><span class="pr-val">${skillScore} / 10</span></div>
+      <div class="pr-row"><span class="pr-key">Overall rating (1–10)</span><span class="pr-val">${overallScore} / 10</span></div>
+    </div>
+    <div>
+      <div class="pr-row"><span class="pr-key">Willingness to travel (1–10)</span><span class="pr-val">${travelScore} / 10</span></div>
+      <div class="pr-row"><span class="pr-key">Work style</span><span class="pr-val">${wsText}</span></div>
+      <div class="pr-row"><span class="pr-key">Outside issues</span><span class="pr-val ${logiState.issues==='yes'?'bad':''}">${issuesText}</span></div>
+      <div class="pr-row"><span class="pr-key">Can read plans</span><span class="pr-val">${plansMap[logiState.plans]||'Not asked'}</span></div>
+      <div class="pr-row"><span class="pr-key">Languages spoken</span><span class="pr-val">${[...checkedLangs].join(', ')||'Not specified'}</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="pr-section">
+  <div class="pr-section-title">Logistics &amp; availability</div>
+  <div class="pr-grid">
+    <div>
+      <div class="pr-row"><span class="pr-key">Location</span><span class="pr-val">${candLocation||'Not specified'}</span></div>
+      <div class="pr-row"><span class="pr-key">Transportation</span><span class="pr-val ${logiState.trans==='yes'?'good':logiState.trans==='no'?'bad':''}">${logiState.trans?logiState.trans.charAt(0).toUpperCase()+logiState.trans.slice(1):'Not asked'}</span></div>
+    </div>
+    <div>
+      <div class="pr-row"><span class="pr-key">Has own tools</span><span class="pr-val ${logiState.tools==='yes'?'good':logiState.tools==='no'?'bad':''}">${logiState.tools?logiState.tools.charAt(0).toUpperCase()+logiState.tools.slice(1):'Not asked'}</span></div>
+      <div class="pr-row"><span class="pr-key">Available</span><span class="pr-val">${avail}</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="pr-section">
+  <div class="pr-section-title">Question-by-question breakdown</div>
+  ${qRows}
+</div>
+
+${finalNotes?`<div class="pr-section"><div class="pr-section-title">Interviewer notes</div><div style="font-size:10pt;color:#444;line-height:1.6;font-style:italic">"${finalNotes}"</div></div>`:''}
+
+<div class="pr-footer">
+  <span>Alpha Labor Co LLC — Confidential Interview Record</span>
+  <span>Printed ${today}</span>
+</div>
+`;
+  window.print();
+}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+function restart(){
+  applicantType='';hireStatus=null;currentLevel=null;workStyle=null;
+  document.getElementById('inp-name').value='';document.getElementById('inp-phone').value='';
+  document.getElementById('inp-email').value='';document.getElementById('inp-location').value='';
+  document.getElementById('type-erector').classList.remove('selected');
+  document.getElementById('type-lead').classList.remove('selected');
+  document.getElementById('start-btn').disabled=true;
+  document.getElementById('start-btn').textContent='Select applicant type to begin';
+  show('s-welcome');initCats();window.scrollTo(0,0);
+}
+
+initCats();
+</script>
+</body>
+</html>
