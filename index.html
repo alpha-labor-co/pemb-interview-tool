@@ -670,6 +670,17 @@ input[type=range]{width:100%;height:6px;accent-color:#1a1a18}
   <div id="ans-list"></div>
 </div>
 
+<div class="card no-print" style="margin-bottom:.75rem">
+  <div class="data-card-title" style="margin-bottom:.5rem">Submitted by</div>
+  <select id="submitted-by-select" style="width:100%;padding:.6rem .75rem;border:1px solid #ccc;border-radius:6px;font-size:14px;background:#fff">
+    <option value="">— Select interviewer —</option>
+    <option value="Jeff Conaway">Jeff Conaway</option>
+    <option value="Greg Rentz">Greg Rentz</option>
+    <option value="Marc Lewis">Marc Lewis</option>
+    <option value="Matt Johnston">Matt Johnston</option>
+    <option value="Brandon Thompson">Brandon Thompson</option>
+  </select>
+</div>
 <button class="btn-main no-print" id="save-airtable-btn" onclick="saveToAirtable()" style="margin-bottom:.75rem">Send to Airtable</button>
 <button class="print-btn no-print" onclick="printReport()">Print report</button>
 <button class="btn-main no-print" onclick="restart()">Start new interview</button>
@@ -1070,6 +1081,8 @@ function showResults(){
 
 function saveToAirtable(){
   if(!lastResult){alert('No result to save.');return;}
+  const submittedBy=document.getElementById('submitted-by-select').value;
+  if(!submittedBy){alert('Please select who submitted this interview before sending to Airtable.');return;}
   const r=lastResult;
   const wageOffered=parseFloat(document.getElementById('wage-input').value)||null;
   const wsMap={low:'Low — stay close to home',medium:'Medium — work hard, some breaks',high:'High — maximum hours'};
@@ -1117,7 +1130,8 @@ function saveToAirtable(){
     'Recommendation Title':r.recTitleText,
     'Recommendation':r.recBodyText,
     'Interviewer Notes':r.finalNotes||null,
-    'Question Breakdown':qBreakdown
+    'Question Breakdown':qBreakdown,
+    'Submitted By':submittedBy
   };
 
   // Build prefilled Airtable form URL. Multi-selects use comma-joined values; dates use ISO.
