@@ -670,7 +670,7 @@ input[type=range]{width:100%;height:6px;accent-color:#1a1a18}
   <div id="ans-list"></div>
 </div>
 
-<button class="btn-main no-print" id="save-airtable-btn" onclick="saveToAirtable()" style="margin-bottom:.75rem">Save to Airtable</button>
+<button class="btn-main no-print" id="save-airtable-btn" onclick="saveToAirtable()" style="margin-bottom:.75rem">Send to Airtable</button>
 <button class="print-btn no-print" onclick="printReport()">Print report</button>
 <button class="btn-main no-print" onclick="restart()">Start new interview</button>
 </div>
@@ -748,7 +748,7 @@ let workStyle=null;
 
 // === AIRTABLE INTEGRATION ===
 // Paste the webhook URL from your Airtable Automation ("When webhook received" trigger) below.
-const WEBHOOK_URL='https://hooks.airtable.com/workflows/v1/genericWebhook/appoeOifLHXMcBCw4/wfl7tdALKtI2l2F1a/wtrnL4O3XsbKSD59U';
+const FORM_URL='https://airtable.com/appoeOifLHXMcBCw4/shrUKS1XISD6TKGaZ';
 let lastResult=null;
 
 function welcomeAnswer(yes){
@@ -1063,7 +1063,7 @@ function showResults(){
     avail,finalNotes,lv,specLines,recTitleText,recBodyText
   };
   const sb=document.getElementById('save-airtable-btn');
-  if(sb){sb.textContent='Save to Airtable';sb.disabled=false;sb.style.background='';}
+  if(sb){sb.textContent='Send to Airtable';sb.disabled=false;sb.style.background='';}
 
   show('s-results');window.scrollTo(0,0);
 }
@@ -1124,18 +1124,19 @@ function saveToAirtable(){
     'Question Breakdown':qBreakdown
   };
 
+  // Build prefilled Airtable form URL. Multi-selects use comma-joined values; dates use ISO.
+  const params=[];
+  for(const k in payload){
+    let v=payload[k];
+    if(v==null||v==='')continue;
+    if(Array.isArray(v))v=v.join(',');
+    params.push('prefill_'+encodeURIComponent(k)+'='+encodeURIComponent(v));
+  }
+  const url=FORM_URL+'?'+params.join('&');
   const btn=document.getElementById('save-airtable-btn');
-  btn.disabled=true;btn.textContent='Saving…';
-  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({payload:JSON.stringify(payload)})})
-    .then(resp=>{
-      if(!resp.ok)throw new Error('HTTP '+resp.status);
-      btn.textContent='✓ Saved to Airtable';btn.style.background='#3B6D11';
-    })
-    .catch(err=>{
-      btn.disabled=false;btn.textContent='Retry save to Airtable';btn.style.background='#A32D2D';
-      console.error('Airtable save failed',err);
-      alert('Save failed: '+err.message+'\n\nCheck the webhook URL and that the Airtable Automation is turned on.');
-    });
+  window.open(url,'_blank');
+  btn.textContent='✓ Form opened — click Submit in the new tab';
+  btn.style.background='#3B6D11';
 }
 
 function printReport(){
